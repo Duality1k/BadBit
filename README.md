@@ -43,7 +43,7 @@ int main()
 
     // you can access nt headers from the binary class
     Log::Ok("Found NT headers");
-    	Log::Info("NT Signature: 0x%x", binary->pNtHeaders->Signature);
+    Log::Info("NT Signature: 0x%x", binary->pNtHeaders->Signature);
 
     // use FindSections to initialize a std::vector of PIMAGE_SECTION_HEADER reading the binary's sections
     // sections are private and accessed only from class functions, to write raw bytes to the binary use WriteBuffer and ReadBuffer
