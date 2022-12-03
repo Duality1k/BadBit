@@ -1,5 +1,5 @@
 # BadBit
-BadBit is a lightweight single header library for PE binary parsing
+BadBit is a lightweight single header library for PE binary parsing, the library also supports XOR (not necessarily needed, the lib handles that too) and will later on support enabling dynamically imported calls too.
 
 ## Features
 - **Write/Read Raw Data**
