@@ -1,6 +1,14 @@
 # BadBit
 BadBit is a lightweight single header library for PE binary parsing
 
+## Features
+- **Write/Read Raw Data**
+- **Read Dos/Nt headers**
+- **Read all section headers**
+- **Get/Delete/Add sections (automatically fixes PE)**
+- **IAT/EAT Read & Hook** (wip)
+- **Save the modified buffer to a new file**
+
 ## Example deleting a section from a PE header
 
 for this example i also use "lightlog" library from my repositories (https://github.com/veil3/lightlog).
