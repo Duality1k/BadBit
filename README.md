@@ -12,8 +12,8 @@ you can initialize it like this:
 Here's a fully working example:
 ### main.hpp
 ```c++
-#include "includes/lightlog.hpp"
-#include "includes/badbit.hpp"
+#include "include/lightlog.hpp"
+#include "include/badbit.hpp"
 
 using namespace badbit;
 
