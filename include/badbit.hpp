@@ -134,6 +134,38 @@ namespace badbit
 
             return true;
         }
+		
+	// Strips all debug information from the executable.
+        auto ClearDebugDirectory() -> bool {
+
+            // Get the debug directory from the PE header
+            PIMAGE_DATA_DIRECTORY DataDebugDir = &pNtHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
+
+            if (DataDebugDir->Size == NULL || DataDebugDir->VirtualAddress == NULL)
+            {
+                // There is no debug directory, so it is OK to just return true.
+                return true;
+            }
+
+            // Once data regarding the debug directory is known, it can be cleared in the PE header and
+            // all data related to it.
+            PIMAGE_DEBUG_DIRECTORY DebugDir = (PIMAGE_DEBUG_DIRECTORY)(vbufBase + Rva::RvaToOffset(pNtHeaders, DataDebugDir->VirtualAddress));
+
+            // Clear the raw data
+            uintptr_t RawData = vbufBase + DebugDir->PointerToRawData;
+            memset((void*)RawData, 0, DebugDir->SizeOfData);
+
+            // Clear the debug directory
+            memset(DebugDir, 0, DataDebugDir->Size);
+
+            // Set the Data directory values to both 0
+            DataDebugDir->VirtualAddress = 0;
+            DataDebugDir->Size = 0;
+
+            // Done!
+            return true;
+
+        }
 
         template <typename T>
         auto ReadBuffer(std::uintptr_t address, T* value) -> bool {
