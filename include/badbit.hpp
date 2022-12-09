@@ -17,15 +17,15 @@
 
 namespace badbit
 {
-	class Binary
-	{
-	private:
-		    std::vector<byte> vBuffer;
+    class Binary
+    {
+    private:
+        std::vector<byte> vBuffer;
         std::uintptr_t vbufBase = 0;
-        
+
         bool bInitializedSections = false;
         std::vector<PIMAGE_SECTION_HEADER> vSections;
-        
+
         // read the binary as a std::vector<byte>
         auto vecReadFile() -> bool
         {
@@ -58,19 +58,19 @@ namespace badbit
             return true;
         }
 
-	public:
-		std::wstring FilePath;
-		std::wstring FileName;
+    public:
+        std::wstring FilePath;
+        std::wstring FileName;
 
-		PIMAGE_DOS_HEADER pDosHeader = nullptr;
-		PIMAGE_NT_HEADERS pNtHeaders = nullptr;
+        PIMAGE_DOS_HEADER pDosHeader = nullptr;
+        PIMAGE_NT_HEADERS pNtHeaders = nullptr;
 
-		explicit Binary(const std::wstring filePath) : FilePath(filePath) {
+        explicit Binary(const std::wstring filePath) : FilePath(filePath) {
             // get only the fileName (with extension) from the full path
-			this->FileName = filePath.substr(filePath.find_last_of(xorstr_(L"/\\")) + 1);
-			this->vecReadFile();
+            this->FileName = filePath.substr(filePath.find_last_of(xorstr_(L"/\\")) + 1);
+            this->vecReadFile();
             this->vbufBase = reinterpret_cast<std::uintptr_t>(vBuffer.data());
-		}
+        }
 
         // get the dos header from the binary's PE
         auto FindDosHeader() -> bool {
@@ -134,8 +134,8 @@ namespace badbit
 
             return true;
         }
-		
-	// Strips all debug information from the executable.
+
+        // Strips all debug information from the executable.
         auto ClearDebugDirectory() -> bool {
 
             // Get the debug directory from the PE header
@@ -169,7 +169,7 @@ namespace badbit
 
         template <typename T>
         auto ReadBuffer(std::uintptr_t address, T* value) -> bool {
-            if (!IsBadWritePtr(address, sizeof *value)) {
+            if (!IsBadWritePtr(address, sizeof * value)) {
                 *value = *reinterpret_cast<T*>(address);
                 return true;
             }
@@ -242,7 +242,7 @@ namespace badbit
             /////////////////////////////////////////////////////////
 
             // delete section data (actual data, not the header)
-            // WIP
+            this->vBuffer.erase(vBuffer.begin() + targetSection.PointerToRawData, vBuffer.begin() + targetSection.SizeOfRawData);
         }
 
         auto GetSection(std::string sectionName) -> IMAGE_SECTION_HEADER {
@@ -250,8 +250,8 @@ namespace badbit
             for (int i = 0; i < vSections.size(); i++)
                 if (std::string((char*)this->vSections[i]->Name) == sectionName)
                     return *this->vSections[i];
-            
-            throw std::runtime_error("failed to get \""+sectionName+"\" section");
+
+            throw std::runtime_error("failed to get \"" + sectionName + "\" section");
             return IMAGE_SECTION_HEADER{};
         }
 
@@ -275,6 +275,6 @@ namespace badbit
             return true;
         }
 
-		~Binary() {}
-	};
+        ~Binary() {}
+    };
 }
