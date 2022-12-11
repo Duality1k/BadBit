@@ -17,7 +17,7 @@
 
 namespace badbit
 {
-    static DWORD RvaToOffset(PIMAGE_NT_HEADERS NtHeaders, DWORD RVA)
+    DWORD RvaToOffset(PIMAGE_NT_HEADERS NtHeaders, DWORD RVA)
     {
         DWORD Offset = RVA;
         DWORD Limit;
