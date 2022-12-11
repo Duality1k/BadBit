@@ -17,6 +17,38 @@
 
 namespace badbit
 {
+    static DWORD RvaToOffset(PIMAGE_NT_HEADERS NtHeaders, DWORD RVA)
+    {
+        DWORD Offset = RVA;
+        DWORD Limit;
+
+        PIMAGE_SECTION_HEADER Image = IMAGE_FIRST_SECTION(NtHeaders);
+
+        if (RVA < Image->PointerToRawData)
+            return RVA;
+
+        for (int i = 0; i < NtHeaders->FileHeader.NumberOfSections; i++)
+        {
+            if (Image[i].SizeOfRawData)
+                Limit = Image[i].SizeOfRawData;
+            else
+                Limit = Image[i].Misc.VirtualSize;
+
+            if (RVA >= Image[i].VirtualAddress && RVA < (Image[i].VirtualAddress + Limit))
+            {
+                if (Image[i].PointerToRawData != 0)
+                {
+                    Offset -= Image[i].VirtualAddress;
+                    Offset += Image[i].PointerToRawData;
+                }
+
+                return Offset;
+            }
+        }
+
+        return 0;
+    }
+    
     class Binary
     {
     private:
@@ -149,7 +181,7 @@ namespace badbit
 
             // Once data regarding the debug directory is known, it can be cleared in the PE header and
             // all data related to it.
-            PIMAGE_DEBUG_DIRECTORY DebugDir = (PIMAGE_DEBUG_DIRECTORY)(vbufBase + Rva::RvaToOffset(pNtHeaders, DataDebugDir->VirtualAddress));
+            PIMAGE_DEBUG_DIRECTORY DebugDir = (PIMAGE_DEBUG_DIRECTORY)(vbufBase + RvaToOffset(pNtHeaders, DataDebugDir->VirtualAddress));
 
             // Clear the raw data
             uintptr_t RawData = vbufBase + DebugDir->PointerToRawData;
