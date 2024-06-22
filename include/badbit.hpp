@@ -1,5 +1,5 @@
 /*
-    BadBit is a single header PE libray made from https://github.com/veil3 under MIT license
+    BadBit is a single header PE libray under MIT license
 */
 
 #include <Windows.h>
